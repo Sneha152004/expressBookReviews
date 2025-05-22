@@ -10,8 +10,16 @@ app.use(express.json());
 
 app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
 
-app.use("/customer/auth/*", function auth(req,res,next){
-//Write the authenication mechanism here
+app.use("/customer/auth/*", function auth(req, res, next) {
+  const token = req.headers.authorization;
+
+  if (token === "valid_token") {
+    // Let the request continue to the next handler
+    next();
+  } else {
+    // Reject the request if not authorized
+    res.status(401).send("Unauthorized");
+  }
 });
  
 const PORT =5000;
